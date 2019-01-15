@@ -1,5 +1,15 @@
 package com.revature.models;
 
+
+
+/**
+ * Simple Pojo to handle the signin request with cognito
+ * we use the newPassword field for the first signin where the user
+ * needs to set a new password
+ * 
+ * @author 1811-Java-Nick 12/27/18 Hugo, Zaryn
+ * 
+ */
 public class AuthRequest {
 
 	private String username;

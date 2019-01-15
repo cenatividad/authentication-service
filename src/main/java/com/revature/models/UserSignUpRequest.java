@@ -2,6 +2,16 @@ package com.revature.models;
 
 import java.time.LocalDate;
 
+
+
+/**
+ * Pojo that matches with the actual admin pojo in RFAdmingLogin service.
+ * Most of the fields are not currently used in the sign up process.
+ * It is the object we need to send with a post request to "/signup" to sign up
+ * 
+ * @author 1811-Java-Nick 12/27/18 Hugo, Zaryn
+ * 
+ */
 public class UserSignUpRequest {
 
 	private int adminId;
