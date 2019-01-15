@@ -1,9 +1,14 @@
 package com.revature.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
+import com.amazonaws.auth.AWSCredentials;
+import com.amazonaws.auth.AWSCredentialsProvider;
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
+import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.auth.ClasspathPropertiesFileCredentialsProvider;
 import com.amazonaws.services.cognitoidp.*;
 
@@ -12,20 +17,26 @@ import com.amazonaws.services.cognitoidp.*;
 @ConfigurationProperties
 public class AmazonCognitoConfig {
 
+	@Value("clientId")
 	private String clientId;
+	
+	@Value("userPoolId")
 	private String userPoolId;
+	
+	@Value("endPoint")
 	private String endPoint;
+	
+	@Value("region")
 	private String region;
+	
+	@Value("identityPoolId")
 	private String identityPoolId;
 	
 	public AWSCognitoIdentityProvider getAmazonCognitoIdentityClient() {
-	      ClasspathPropertiesFileCredentialsProvider propertiesFileCredentialsProvider = 
-	           new ClasspathPropertiesFileCredentialsProvider();
-	 
-	       return AWSCognitoIdentityProviderClientBuilder.standard()
-	                      .withCredentials(propertiesFileCredentialsProvider)
-	                             .withRegion(getRegion())
-	                             .build();
+		AWSCredentials aws = new BasicAWSCredentials(System.getenv("AWS_ACCESS_KEY_ID"),System.getenv("AWS_SECRET_ACCESS_KEY"));
+        return AWSCognitoIdentityProviderClientBuilder.standard()
+                       .withCredentials(new AWSStaticCredentialsProvider(aws))
+                              .withRegion(getRegion()).build();
 	 
 	}
 	

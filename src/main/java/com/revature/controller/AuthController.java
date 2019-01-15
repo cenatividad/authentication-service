@@ -1,5 +1,7 @@
 package com.revature.controller;
 
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.amazonaws.services.cognitoidp.AWSCognitoIdentityProvider;
 import com.amazonaws.services.cognitoidp.model.AdminCreateUserRequest;
@@ -34,6 +37,7 @@ public class AuthController {
 	AmazonCognitoConfig amazonCognitoConfig;
 	
 	@PostMapping("/signup")
+	@ResponseBody
 	public UserType signUp(@RequestBody UserSignUpRequest signUpRequest) {
 		AWSCognitoIdentityProvider cognitoClient = amazonCognitoConfig.getAmazonCognitoIdentityClient();
 		AdminCreateUserRequest cognitoRequest = new AdminCreateUserRequest()
@@ -44,6 +48,9 @@ public class AuthController {
 						.withName("name")
 			              .withValue(signUpRequest.getFirstname()),
 			            new AttributeType()
+			            .withName("email")
+			            .withValue(signUpRequest.getUsername()),
+			            new AttributeType()
 			            .withName("email_verified")
 			              .withValue("true"))
 						.withTemporaryPassword("numberoflegs")
@@ -52,11 +59,13 @@ public class AuthController {
 		
 		AdminCreateUserResult createUserResult = cognitoClient.adminCreateUser(cognitoRequest);
 		UserType cognitoUser = createUserResult.getUser();
-		System.out.println("bla heyo Im Here#####################################/n#####################################/n##########################################");
 		return cognitoUser;
 	}
 	
 	
+	
+	@PostMapping("/login")
+	@ResponseBody
 	public AuthenticationResultType signIn(@RequestBody AuthRequest authRequest) {
 		AuthenticationResultType authenticationResult = null;
 		AWSCognitoIdentityProvider cognitoClient = amazonCognitoConfig.getAmazonCognitoIdentityClient();
@@ -74,8 +83,8 @@ public class AuthController {
 	   AdminInitiateAuthResult result = cognitoClient.adminInitiateAuth(request);
 	   
 	   if(StringUtils.isNotBlank(result.getChallengeName())) {
-		   if("NEW_PASS_WORD_REQUIRED".equals(result.getChallengeName())) {
-			   authParameters.put("NEW_PASS_WORD", authRequest.getPassword());
+		   if("NEW_PASSWORD_REQUIRED".equals(result.getChallengeName())) {
+			   authParameters.put("NEW_PASSWORD", authRequest.getPassword());
 			   
 			   final AdminRespondToAuthChallengeRequest challengeRequest =
 					   new AdminRespondToAuthChallengeRequest();
@@ -89,6 +98,7 @@ public class AuthController {
 					   cognitoClient.adminRespondToAuthChallenge(challengeRequest);
 			   
 			   authenticationResult = resultChallenge.getAuthenticationResult();
+
 		   }
 	   }
 	   
