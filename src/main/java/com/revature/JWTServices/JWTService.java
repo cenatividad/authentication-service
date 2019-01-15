@@ -1,5 +1,7 @@
 package com.revature.JWTServices;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.ParseException;
 import java.util.Date;
 
@@ -11,14 +13,18 @@ import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWEAlgorithm;
 import com.nimbusds.jose.JWEHeader;
 import com.nimbusds.jose.JWEObject;
+import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.KeyLengthException;
 import com.nimbusds.jose.Payload;
 import com.nimbusds.jose.crypto.DirectEncrypter;
 import com.nimbusds.jose.jwk.source.ImmutableSecret;
 import com.nimbusds.jose.jwk.source.JWKSource;
+import com.nimbusds.jose.jwk.source.RemoteJWKSet;
 import com.nimbusds.jose.proc.BadJOSEException;
 import com.nimbusds.jose.proc.JWEDecryptionKeySelector;
 import com.nimbusds.jose.proc.JWEKeySelector;
+import com.nimbusds.jose.proc.JWSKeySelector;
+import com.nimbusds.jose.proc.JWSVerificationKeySelector;
 import com.nimbusds.jose.proc.SimpleSecurityContext;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.proc.ConfigurableJWTProcessor;
@@ -35,16 +41,24 @@ public class JWTService {
 	 * Takes encrypted JWT token as a string and decodes will return null if the token is invalid;
 	 * @param token
 	 * @return String of email if confirmed
+	 * @throws MalformedURLException 
 	 */
-	public String ExtractandDecodeJWT(String token)
+	public String ExtractandDecodeJWT(String token) throws MalformedURLException
 	{
-		ConfigurableJWTProcessor<SimpleSecurityContext> jwtProcessor = new DefaultJWTProcessor<SimpleSecurityContext>();
-		JWKSource<SimpleSecurityContext> jweKeySource = new ImmutableSecret<SimpleSecurityContext>(secretKey);
-		JWEKeySelector<SimpleSecurityContext> jweKeySelector =
-		new JWEDecryptionKeySelector<SimpleSecurityContext>(JWEAlgorithm.DIR, EncryptionMethod.A128CBC_HS256, jweKeySource);
-		jwtProcessor.setJWEKeySelector(jweKeySelector);
-		
+		String userRegion = System.getenv("REFORCE_AWS_REGION");
+		String userID = System.getenv("REFORCE_AWS_KEY");
+		String urlTo = "https://cognito-idp." + userRegion +".amazonaws.com/" + userID + "/.well-known/jwks.json";
+		URL jwkSetURL = new URL(urlTo);
 
+		JWKSource<SimpleSecurityContext> keySource = new RemoteJWKSet<SimpleSecurityContext>(jwkSetURL);
+		JWSKeySelector<SimpleSecurityContext> keySelector = new JWSVerificationKeySelector<SimpleSecurityContext>(JWSAlgorithm.RS256, keySource);
+		System.out.println(keySelector.toString());
+		ConfigurableJWTProcessor<SimpleSecurityContext> jwtProcessor = new DefaultJWTProcessor<SimpleSecurityContext>();
+		
+		
+		System.out.println(keySelector);
+		jwtProcessor.setJWSKeySelector(keySelector);
+		
 		JWTClaimsSet claims;
 		try {
 			claims = jwtProcessor.process(token, null);
@@ -52,6 +66,8 @@ public class JWTService {
 			e.printStackTrace();
 			return null;
 		}
+		String claimString = claims.getClaims().toString();
+		System.out.println(claims.getClaims().toString());
 		String email = (String) claims.getClaim("email");
 		String name = (String) claims.getClaim("name");
 		

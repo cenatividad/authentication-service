@@ -1,6 +1,7 @@
 package com.revature.JWTControllers;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import java.net.MalformedURLException;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,11 +14,10 @@ import com.revature.JWTServices.JWTService;
 @RequestMapping("")
 public class JWTController {
 	
-	@Value("localhost:8080/auth-service/")
+	@Value("localhost:8871/auth-service/")
 	String uri;
 	
-	@Autowired
-	JWTService jServ;
+	JWTService jServ = new JWTService();
 	
 	@GetMapping("jwtgenerate")
 	public String generateToken(String email, String name)
@@ -34,7 +34,7 @@ public class JWTController {
 	}
 	
 	@GetMapping("jwtcheck")
-	public Boolean checkToken (String token)
+	public Boolean checkToken (String token) throws MalformedURLException
 	{
 		String checkEmail = jServ.ExtractandDecodeJWT(token);
 		if (checkEmail != null)
