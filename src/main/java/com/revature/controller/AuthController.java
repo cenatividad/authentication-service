@@ -84,7 +84,7 @@ public class AuthController {
 	   
 	   if(StringUtils.isNotBlank(result.getChallengeName())) {
 		   if("NEW_PASSWORD_REQUIRED".equals(result.getChallengeName())) {
-			   authParameters.put("NEW_PASSWORD", authRequest.getPassword());
+			   authParameters.put("NEW_PASSWORD", authRequest.getNewPassword());
 			   
 			   final AdminRespondToAuthChallengeRequest challengeRequest =
 					   new AdminRespondToAuthChallengeRequest();

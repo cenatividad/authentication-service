@@ -6,6 +6,8 @@ public class AuthRequest {
 
 	private String password;
 	
+	private String newPassword;
+	
 	public AuthRequest() {
 		super();
 		// TODO Auto-generated constructor stub
@@ -36,6 +38,14 @@ public class AuthRequest {
 	@Override
 	public String toString() {
 		return "AuthRequest [username=" + username + ", password=" + password + "]";
+	}
+
+	public String getNewPassword() {
+		return newPassword;
+	}
+
+	public void setNewPassword(String newPassword) {
+		this.newPassword = newPassword;
 	}
 	
 }
