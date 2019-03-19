@@ -17,4 +17,3 @@ jobs:
       
     - stage: quality
       script: mvn sonar:sonar
-      
