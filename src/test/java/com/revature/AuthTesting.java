@@ -11,7 +11,6 @@ import org.springframework.expression.ParseException;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.KeyLengthException;
 import com.nimbusds.jose.proc.BadJOSEException;
-import com.revature.Service.AuthServiceTest;
 
 public class AuthTesting {
 	public AuthServiceTest aTest = new AuthServiceTest();
