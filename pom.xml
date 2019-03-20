@@ -193,6 +193,12 @@
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
+			<!-- https://mvnrepository.com/artifact/org.eclipse.m2e/lifecycle-mapping -->
+			<dependency>
+				<groupId>org.eclipse.m2e</groupId>
+				<artifactId>lifecycle-mapping</artifactId>
+				<version>1.0.0</version>
+			</dependency>
 		</dependencies>
 
 
