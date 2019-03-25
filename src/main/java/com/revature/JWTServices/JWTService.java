@@ -83,7 +83,6 @@ public class JWTService {
 	 */
 	public String Encrypter(JWEHeader header, Payload payload)
 	{
-		byte[] secretKey = secret.getBytes();
 		DirectEncrypter encrypter;
 		try {
 			encrypter = new DirectEncrypter(secretKey);
@@ -126,8 +125,7 @@ public class JWTService {
 		
 		JWEHeader header = new JWEHeader(JWEAlgorithm.DIR, EncryptionMethod.A128CBC_HS256);
 		
-		JWTService jServ = new JWTService();
-		String encryptedToken = jServ.Encrypter(header, payload);
+		String encryptedToken = Encrypter(header, payload);
 		return encryptedToken;
 	}
 }
