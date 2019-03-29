@@ -14,6 +14,13 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import com.revature.JWTServices.JWTService;
 
+/**
+ * Only had time to add one test. It can be used as an example for testing other
+ * methods in this class.
+ * 
+ * @author Kyne Liu
+ *
+ */
 @RunWith(SpringRunner.class)
 public class JWTServiceTest {
 	
